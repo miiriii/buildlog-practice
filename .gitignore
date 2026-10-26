@@ -10,10 +10,17 @@ node_modules/
 # Generated output and Python cache
 dist/
 __pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+playwright-report/
+test-results/
 
 # Local SQLite databases and journal/WAL files
 *.sqlite3
 *.sqlite3-*
+*.sqlite
+*.sqlite-*
 
 # Log files
 *.log

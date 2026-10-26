@@ -1,12 +1,12 @@
-# BuildLog 개발 환경과 Phase 0 점검 결과
+# BuildLog 개발 환경과 실행 안내
 
 점검일: 2026-10-26 (한국 시간)
 
 ## 1. 현재 상태
 
-Phase 0의 문서 검토와 환경 점검을 수행했습니다. 개발에 사용할 도구는 실행 가능하지만 회원 인증 담당이 미정이므로 Phase 0의 전체 완료 조건은 아직 충족하지 않았습니다. Phase 1은 시작하지 않았습니다.
+Phase 0의 문서·환경 점검 후 사용자 요청으로 Phase 1의 FastAPI·React 실행 뼈대와 실제 API 연결 검증을 완료했습니다. 회원 인증 담당과 오류 생성 상태 규칙은 여전히 미정입니다. 이번에는 이 결정에 의존하지 않는 부분만 구현했습니다. Phase 2는 시작하지 않았습니다.
 
-수행한 작업은 문서 수정, 로컬 도구 버전 조회, 공식 문서·패키지 배포 정보 확인입니다. 패키지 설치, 가상환경 생성, 서비스 코드 작성, DB 파일 생성, Supabase 프로젝트 생성·접속, Git 초기화·커밋은 하지 않았습니다.
+아래 2~8절은 Phase 0 당시의 점검 기록입니다. 설치·실행의 최신 안내와 Phase 1 결과는 9절을 따릅니다. Phase 1에서 가상환경·패키지·서비스 뼈대·테스트를 만들었으며 업무용 DB 생성, 회원 기능, Supabase 연결, Git 커밋·push는 수행하지 않았습니다.
 
 ## 2. 확정한 기술 구성
 
@@ -147,4 +147,93 @@ DB 구조 변경 명령과 프론트 테스트 명령은 도구 설정 후 기�
 - [ ] 오류 생성 시 상태 선택 규칙 확인
 - [ ] 사용자의 결과 확인 후 Phase 1 진행
 
-결론: 환경 점검은 완료했습니다. 미정 사항이 남아 있으므로 Phase 0 전체 완료와 Phase 1 착수는 아직 보류 상태입니다.
+Phase 0 당시 결론: 환경 점검은 완료했으나 미정 사항이 남았습니다. 이후 사용자의 Phase 1 진행 요청으로 인증과 독립적인 실행 뼈대만 먼저 구현했습니다. 최신 결과는 다음 절을 참고합니다.
+
+## 9. Phase 1 결과와 실제 실행 방법
+
+### 9.1. 구현 범위
+
+- `backend/.venv`에 패키지를 설치하고 전체 설치 버전을 `backend/requirements.txt`에 고정했습니다.
+- `backend/app/main.py`에 FastAPI 앱과 `GET /api/health`를 만들었습니다.
+- 상태 응답은 `{"status":"ok","service":"BuildLog API"}`뿐이며 DB·환경 변수·비밀 설정을 노출하지 않습니다. DB 연결 상태를 검사하는 API는 아닙니다.
+- `frontend/`에 React·Vite 프로젝트를 만들고 정확한 버전과 `package-lock.json`을 기록했습니다.
+- 홈에는 공부 기록·할 일·오류 기록의 안내 카드와 서버 연결 상태를 표시합니다. 기록 기능은 준비 중이며 동작하지 않는 작성·저장 버튼은 만들지 않았습니다.
+- API 요청 실패 시 안내와 다시 확인 버튼을 제공하며, 예상과 다른 응답도 정상 연결로 표시하지 않습니다.
+- CORS는 `http://127.0.0.1:5173`과 `http://localhost:5173`을 허용하며 현재는 GET만, 자격 증명 전달 없이 구성했습니다. 인증 결정 후 필요한 설정을 추가합니다.
+- 설정은 `backend/.env`, `frontend/.env`로 나눕니다. 실제 파일 없이도 로컬 기본값으로 실행됩니다. 공유용 `.env.example`만 만들었으며 실제 비밀값은 없습니다.
+- SQLite3 및 부속 파일, 가상환경, npm 설치 폴더, 빌드·테스트 결과물의 Git 제외 규칙을 확인하고 보완했습니다.
+
+### 9.2. 사용 버전
+
+| 구성 | 설치한 버전 |
+| --- | --- |
+| Python / Node.js | 기존 3.13.14 / 24.22.1 |
+| FastAPI / Uvicorn | 0.162.0 / 0.54.0 |
+| Pydantic Settings / pytest | 2.16.1 / 9.1.1 |
+| React / React DOM | 19.3.1 / 19.3.1 |
+| Vite / React 플러그인 | 8.3.5 / 6.1.2 |
+| Playwright | 1.64.1, 기존 설치된 Microsoft Edge 사용 |
+
+DB 모델·마이그레이션 도구 및 인증 라이브러리는 아직 설치하지 않았습니다. Phase 2 이후 필요한 단계에서 결정·추가합니다.
+
+### 9.3. 지금 실행하기 (Windows PowerShell)
+
+터미널 두 개를 프로젝트 루트 `buildlog`에서 열어 각각 실행합니다. 가상환경을 활성화할 필요는 없습니다.
+
+첫 번째 터미널 — API 서버:
+
+```powershell
+cd backend
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+두 번째 터미널 — React:
+
+```powershell
+cd frontend
+npm.cmd run dev
+```
+
+브라우저에서 `http://127.0.0.1:5173`을 열고 서버 연결 성공 문구를 확인합니다. API는 `http://127.0.0.1:8000/api/health`, API 문서는 `http://127.0.0.1:8000/docs`에서 확인합니다. 각 터미널에서 `Ctrl+C`로 종료합니다. 다른 프로그램이 같은 포트를 사용하면 실행을 중단하고 주소 설정을 함께 조정합니다.
+
+### 9.4. 다른 환경에서 의존성 다시 설치하기
+
+프로젝트 루트에서 실행합니다. 이미 준비된 현재 환경에서는 다시 실행할 필요가 없습니다.
+
+```powershell
+python -m venv backend/.venv
+backend/.venv/Scripts/python.exe -m pip install -r backend/requirements.txt
+cd frontend
+npm.cmd ci
+```
+
+설정을 바꾸고 싶으면 `backend/.env.example`을 `backend/.env`로, `frontend/.env.example`을 `frontend/.env`로 복사해 수정합니다. `.env`는 Git에서 제외됩니다. `CORS_ORIGINS`는 JSON 배열이며 프론트 API 주소와 서버 주소를 함께 맞춰야 합니다. `DATABASE_URL`은 현재 연결하지 않으며 기본값은 작업 위치와 무관하게 프로젝트의 `database/buildlog.sqlite3`를 가리킵니다.
+
+### 9.5. 검증 명령과 결과
+
+프로젝트 루트에서 백엔드 테스트:
+
+```powershell
+cd backend
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+프로젝트 루트에서 프론트 빌드와 실제 브라우저 테스트:
+
+```powershell
+cd frontend
+npm.cmd run build
+npm.cmd run test:e2e
+```
+
+브라우저 테스트는 비어 있는 8000·5173 포트에서 API·프론트 서버를 자동 시작하고 종료합니다. 이미 수동 서버가 실행 중이면 종료 후 테스트합니다. 설치된 Microsoft Edge를 사용하며 별도 브라우저 다운로드는 하지 않았습니다. 다른 컴퓨터에서 Edge가 없으면 브라우저 실행 환경을 먼저 준비해야 합니다.
+
+확인 결과:
+
+- 백엔드 테스트 5개: 상태 응답, 허용 CORS, 허용되지 않은 출처 차단, 환경 변수 적용·비노출, 작업 위치와 독립적인 DB 경로 확인
+- Edge 브라우저 테스트 5개: 실제 FastAPI 연결, 네트워크 실패와 재시도 복구, 잘못된 서버 응답 처리, 360px 가로 넘침 검사, 데스크톱 홈 확인
+- React 프로덕션 빌드 성공, Python 의존성 검사 통과
+- 데스크톱과 360px 스크린샷을 열어 카드·버튼·문구 배치를 직접 확인
+- 브라우저 테스트 서버 종료 확인, 업무용 DB 파일 미생성 확인
+
+이 확인은 Phase 1 범위입니다. 회원·기록 저장·Supabase 및 Chrome·Safari 최신 두 버전 전체 검증은 아직 수행하지 않았습니다. 다음은 Phase 2이며 회원 인증 담당을 결정해야 사용자 데이터 구조를 확정할 수 있습니다. 기존 README는 변경하지 않았고 commit·push도 하지 않았습니다.
