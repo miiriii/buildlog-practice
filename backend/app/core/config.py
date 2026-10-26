@@ -21,3 +21,6 @@ class Settings(BaseSettings):
         )
     )
     cors_origins: list[str] = ["http://127.0.0.1:5173", "http://localhost:5173"]
+    session_cookie_name: str = "buildlog_session"
+    session_cookie_secure: bool = False
+    session_lifetime_days: int = 7

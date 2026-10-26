@@ -198,7 +198,7 @@ BuildLog의 첫 MVP에서는 다음 세 가지 기록을 관리합니다.
 
 - 프론트엔드: React
 - 백엔드: Python, FastAPI
-- 운영 데이터베이스: Supabase의 PostgreSQL
-- 초기 개발·테스트 데이터베이스: SQLite3
+- 현재 데이터베이스: SQLite3
+- Supabase 연동: 관련 수업을 진행한 뒤 별도 단계에서 다시 검토
 
-회원 인증을 FastAPI에서 직접 관리할지 Supabase Auth를 사용할지는 미정입니다. 기존 기능 범위는 유지하며, 상세 개발 순서는 `docs/plan.md`를 따릅니다.
+회원가입과 로그인은 FastAPI에서 관리하고 사용자 데이터는 SQLite3에 저장합니다. 기존 기능 범위는 유지하며, 상세 개발 순서는 `docs/plan.md`를 따릅니다.

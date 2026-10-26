@@ -34,7 +34,7 @@ def test_local_frontend_is_allowed_by_cors():
     )
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == "http://127.0.0.1:5173"
-    assert "access-control-allow-credentials" not in response.headers
+    assert response.headers["access-control-allow-credentials"] == "true"
 
 
 def test_unconfigured_origin_is_not_allowed():

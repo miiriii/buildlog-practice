@@ -35,7 +35,7 @@ export default function ApiStatus() {
         </p>
       </div>
       {status === 'error'
-        ? <button className="retry-button" onClick={() => setAttempt((value) => value + 1)}>다시 확인</button>
+        ? <button className="secondary-button" onClick={() => setAttempt((value) => value + 1)}>다시 확인</button>
         : <span className="status-badge"><span className="status-dot" />{status === 'success' ? '연결됨' : '확인 중'}</span>}
     </section>
   )
